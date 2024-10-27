@@ -1,0 +1,536 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(HealHubApp());
+}
+
+class HealHubApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String _username = '';
+  Color backgroundColor = Colors.blue; // Initial background color
+  String _selectedCommunitySupportAction = ''; // Declare the variable
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Heal Hub'),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'Select Your Mood') {
+                _showMoodSelectionDialog(context);
+              } else if (value == 'Settings') {
+                _showSettingsDialog(context);
+              }
+
+             else if (value == 'Community Support') {
+                _selectedCommunitySupportAction = value;
+                _showCommunitySupportDialog(context);
+ }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                'Settings',
+                'Support',
+                'Select Your Mood',
+                'Counselling Support',
+                'Self-help Tools',
+                'Community Support',
+                'Reminders and Notifications',
+                'Feedback',
+              ].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _showSignInDialog(context);
+            },
+            child: Text('Sign In'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _showLogInDialog(context);
+            },
+            child: Text('Log In'),
+          ),
+        ],
+      ),
+      body: Container(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                _username.isEmpty ? 'Welcome to Heal Hub' : 'Welcome $_username',
+                style: TextStyle(
+                  fontSize: 44,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Image.network(
+                'image-url',
+                height: 400,
+              ),
+            ],
+          ),
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor, // Use dynamic background color
+        ),
+      ),
+    );
+  }
+
+
+  void _showSettingsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Settings'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  showEnableNotificationsDialog(context);
+                },
+                child: Text('Enable Notifications'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  changeBackgroundColor(Colors.white); // Change background color
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('Change color theme'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  showDataConcernsDialog(context);
+                },
+                child: Text('Ensure Privacy'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void changeBackgroundColor(Color color) {
+    setState(() {
+      backgroundColor = color;
+    });
+  }
+void showEnableNotificationsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Enable Notifications'),
+        content: Text('Notifications are now enabled.'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
+}
+
+void showDataConcernsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Data Concerns'),
+        content: Text('Data is encrypted for your privacy.'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    });
+}
+void _showCommunitySupportDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('We are here to assist you'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                _openImage('https://assets-global.website-files.com/60e7520db569040bc82c2bf7/620c856f3277781e8aaa2dd0_mental-health-chatbots-woebot.jpeg');
+              },
+              child: Text('Ask an Expert'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _openImage('data:image/jpeg;base64,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');
+              },
+              child: Text('Community Chats'),
+                             
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Close'),
+         ),
+        ],
+      );
+    },
+  );
+}
+
+  void _openImage(String imageUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Container(
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      });
+  }
+  void _showSignInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Sign In'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Username'),
+                onChanged: (value) {
+                  setState(() {
+                    _username = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email ID'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_username.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Fill everything!'),
+                    ),
+                  );
+                } else {
+                  // Implement sign-in functionality here
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showLogInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Log In'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Username'),
+                onChanged: (value) {
+                  setState(() {
+                    _username = value;
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Password'),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Email ID'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (_username.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Fill everything!'),
+                    ),
+                  );
+                } else {
+                  // Implement log-in functionality here
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMoodSelectionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Your Mood'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Add mood options
+              _buildMoodOption(context, 'Anxiety'),
+              _buildMoodOption(context, 'Depression'),
+              _buildMoodOption(context, 'Anger'),
+              _buildMoodOption(context, 'Loneliness'),
+              _buildMoodOption(context, 'Guilt and Shame'),
+              _buildMoodOption(context, 'Stress'),
+              _buildMoodOption(context, 'Jealousy'),
+              _buildMoodOption(context, 'Fear'),
+              _buildMoodOption(context, 'Failure'),
+              _buildMoodOption(context, 'Financial Crisis'),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMoodOption(BuildContext context, String mood) {
+    return ListTile(
+      title: Text(mood),
+      onTap: () {
+        _navigateToMoodSpecificPage(context, mood);
+      },
+    );
+  }
+
+  void _navigateToMoodSpecificPage(BuildContext context, String mood) {
+    Navigator.of(context).pop(); // Close the mood selection dialog
+    // Navigate to the mood-specific page with the selected mood
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MoodSpecificPage(mood: mood),
+    ));
+  }
+}
+
+class MoodSpecificPage extends StatelessWidget {
+  final String mood;
+
+  MoodSpecificPage({required this.mood});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mood: $mood'),
+      ),
+      body: GridView.count(
+        crossAxisCount: 2, // Two buttons per row
+        padding: EdgeInsets.all(16),
+        children: <Widget>[
+          _buildLargeButton(context, mood, 'Articles'),
+          _buildLargeButton(context, mood, 'Your Favourite Songs'),
+          _buildLargeButton(context, mood, 'Motivational Stories'),
+          _buildLargeButton(context, mood, 'Motivational Quotes'),
+          _buildLargeButton(context, mood, 'Videos'),
+          _buildLargeButton(context, mood, 'Meditation and Relaxation Guides'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLargeButton(BuildContext context, String mood, String text) {
+    String imageUrl = '';
+
+    if (mood == 'Anger') {
+      if (text == 'Articles') {
+        imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdEyYooFuz__t1unu8ukNmXPQ8BRwmb4hBwg&usqp=CAU';
+      } else if (text == 'Motivational Quotes') {
+        imageUrl = 'URL for Anger Motivational Quotes Image';
+      } else if (text == 'Meditation and Relaxation Guides') {
+        imageUrl = 'URL for Anger Meditation and Relaxation Guides Image';
+      }
+    } else if (mood == 'Depression') {
+      if (text == 'Articles') {
+        imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdEyYooFuz__t1unu8ukNmXPQ8BRwmb4hBwg&usqp=CAU';
+      } else if (text == 'Motivational Quotes') {
+        imageUrl = 'URL for Depression Motivational Quotes Image';
+      } else if (text == 'Meditation and Relaxation Guides') {
+        imageUrl = 'URL for Depression Meditation and Relaxation Guides Image';
+      }
+    } else if (mood == 'Anxiety') {
+      if (text == 'Articles') {
+        imageUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdEyYooFuz__t1unu8ukNmXPQ8BRwmb4hBwg&usqp=CAU';
+      } else if (text == 'Motivational Quotes') {
+        imageUrl = 'URL for Depression Motivational Quotes Image';
+      } else if (text == 'Meditation and Relaxation Guides') {
+        imageUrl = 'URL for Depression Meditation and Relaxation Guides Image';
+      }
+    }
+      // Handle other moods or options here
+    
+
+    return Container(
+      margin: EdgeInsets.all(8),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(32), // Increase padding for larger buttons
+          minimumSize: Size(200, 200),
+        ),
+        onPressed: () {
+          if (imageUrl.isNotEmpty) {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ImageDisplayPage(imageUrl: imageUrl),
+            ));
+          } else {
+            // Handle other options or show an error message
+          }
+        },
+        child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+}
+
+Widget _buildLargeButton(BuildContext context, String mood, String text) {
+  String imageUrl = '';
+
+ if (mood == 'Anger') {
+  if (text == 'Articles') {
+    imageUrl = 'data:image/jpeg;base64,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';
+  } else if (text == 'Motivational Quotes') {
+    imageUrl = 'mood.jpeg';
+  } else if (text == 'Meditation and Relaxation Guides') {
+    imageUrl = 'med.jpeg';
+  }
+}
+ if (mood == 'Depression') {
+  if (text == 'Articles') {
+    imageUrl = 'articles/jpeg';
+  } else if (text == 'Motivational Quotes') {
+    imageUrl = 'mood.jpeg';
+  } else if (text == 'Meditation and Relaxation Guides') {
+    imageUrl = 'med.jpeg';
+  }
+}
+
+  return Container(
+    margin: EdgeInsets.all(8),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(32), // Increase padding for larger buttons
+        minimumSize: Size(200, 200),
+      ),
+      onPressed: () {
+        if (imageUrl.isNotEmpty) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ImageDisplayPage(imageUrl: imageUrl),
+          ));
+        } else {
+          // Handle other options or show an error message
+        }
+      },
+      child: Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+    ),
+  );
+}
+
+class ImageDisplayPage extends StatelessWidget {
+  final String imageUrl;
+
+  ImageDisplayPage({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image Display'),
+      ),
+      body: Center(
+        child: Container(
+          width: double.infinity, // Expand the image to the full width of the screen
+          height: double.infinity, // Expand the image to the full height of the screen
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.contain, // This will maintain the image's aspect ratio and fit it within the container
+          ),
+        ),
+      ),
+    );
+  }
+}
